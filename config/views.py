@@ -12,18 +12,25 @@ def calc_avail_totals(gameday):
     notset = User.objects.filter(active=True).count() - dontknow.count() - no.count() - yes.count()
     return dontknow, no, yes, notset
 
+def get_total_selected(gameday):
+    selected = Availbility.objects.filter(gameday=gameday, player__active=True, selection=1)
+
+    return selected
+
 def game(request, gameday_id):
     gameday = Gameday.objects.get(id=gameday_id)
     games = gameday.games.all()
     whatsapp_text=f"?text=Are%20you%20available%20for%20{gameday.date}?%20Please%20update%20Waatea!"
 
     dontknow, no, yes, notset = calc_avail_totals(gameday)
+    selected= get_total_selected(gameday)
     html = ""
     html += "<p>"
     html += f'<div style="color:black">Not set: {notset}</div>'
     html += f'<div style="color:orange">Not sure: {dontknow.count()}</div>'
     html += f'<div style="color:red">No: {no.count()}</div>'
     html += f'<div style="color:green">Yes!: {yes.count()}</div>'
+    html += f'<div style="color:blue">Selected!: {selected.count()}</div>'
     html += "</p>"
 
     for player in User.objects.filter(active=True).order_by('name'):
@@ -97,11 +104,13 @@ class list_index(TemplateView):
                 html += f"<br>{game.home} - {game.away}"
 
             dontknow, no, yes, notset = calc_avail_totals(gameday)
+            selected= get_total_selected(gameday)
             html += "<p>"
             html += f'<p style="color:black">Not set: {notset}</p>'
             html += f'<p style="color:orange">Not sure: {dontknow.count()}</p>'
             html += f'<p style="color:red">No: {no.count()}</p>'
             html += f'<p style="color:green">Yes!: {yes.count()}</p>'
+            html += f'<p style="color:blue">Selected: {selected.count()}</div>'
             html += "</p>"
 
             html += "</th>"
@@ -155,6 +164,7 @@ class gamedays_index(TemplateView):
                 html += f"<p>{game.home} - {game.away}<br>({game.team})</p>"
 
             dontknow, no, yes, notset = calc_avail_totals(gameday)
+            selected= get_total_selected(gameday)
             html += '</div>'
             html += '<div class="column30">'
 
@@ -162,6 +172,7 @@ class gamedays_index(TemplateView):
             html += f'<div style="color:orange">Not sure: {dontknow.count()}</div>'
             html += f'<div style="color:red">No: {no.count()}</div>'
             html += f'<div style="color:green">Yes!: {yes.count()}</div>'
+            html += f'<div style="color:blue">Selected!: {selected.count()}</div>'
             html += '</div>'
             html += '</div>'
             html += '</a></div>'

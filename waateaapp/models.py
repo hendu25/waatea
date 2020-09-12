@@ -34,8 +34,6 @@ class Season(MotherModel):
     def __str__(self):
         return self.name
 
-
-
 class Game(MotherModel):
     home = models.ForeignKey(Club, related_name='home_team', on_delete=models.CASCADE,blank=True,null=True)
     away = models.ForeignKey(Club, related_name='away_team', on_delete=models.CASCADE,blank=True,null=True)
@@ -66,10 +64,15 @@ class Availbility(MotherModel):
         (2, 'Unavailable'),
         (3, 'Available'),
     ]
+    SELECTION_CHOICES = [
+        (0, "Not Selected"),
+        (1, "Selected"),
+    ]
 
     gameday = models.ForeignKey(Gameday, on_delete=models.CASCADE,blank=True,null=True)
     player = models.ForeignKey(User, on_delete=models.CASCADE)
     state = models.IntegerField(choices=STATE_CHOICES,default=0)
+    selection = models.IntegerField(choices=SELECTION_CHOICES,default=0)
 
     ordering = ['name']
 
