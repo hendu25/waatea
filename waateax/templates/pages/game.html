@@ -64,6 +64,34 @@ Welcome {{request.user.name }}
 
                 {% if avail.state == 3 %}
                   <i class="thumbs up icon large green"></i>
+                  {% if avail.selection == 0 %}
+                      <button
+                        class="selbutton ui circular purple icon button" 
+                        id="selbutton0{{ avail.id }}" 
+                        data-val=0 data-catid="{{ avail.id }}">
+                  {% else %}
+                      <button 
+                        class="selbutton ui circular purple icon true button" 
+                        id="selbutton0{{ avail.id }}" 
+                        data-val=0 data-catid="{{ avail.id }}">
+                      
+                  {% endif %}
+                    <i class=" icon checkbox large huge"></i>
+
+                    {% if avail.selection == 1 %}
+                    <button
+                      class="selbutton ui circular checkbox true blue icon button" 
+                      id="selbutton1{{ avail.id }}" 
+                      data-val=0 data-catid="{{ avail.id }}">
+                {% else %}
+                    <button 
+                      class="selbutton ui circular checkbox true blue  icon true button" 
+                      id="selbutton1{{ avail.id }}" 
+                      data-val=0 data-catid="{{ avail.id }}">
+                    
+                {% endif %}                    
+                  <i class=" icon checkbox true large huge"></i>
+                  </button>
                 {% endif %}
 
 
@@ -86,5 +114,31 @@ Welcome {{request.user.name }}
 
 <script type="text/javascript">
 
+$('.selbutton').click(function(){
+  var id = $(this).attr("data-catid");
+  var value = $(this).attr("data-val");
+  SetSelection(id, value, $(this));
+
+});
+
+function SetSelection(id, value, object)
+{
+  
+$.ajax(
+{
+    type:"GET",
+    url: "toggleselection",
+    data:{
+             post_id: id,
+             post_value: value
+},
+success: function( data )
+{
+    $( '#selbutton0'+ id ).removeClass('selbutton ui circular blue icon button');
+    $( '#selbutton1'+ id ).removeClass('selbutton ui circular blue icon button');
+    $( '#selbutton0'+ id ).addClass('selbutton ui circular  purple button');
+    $( '#selbutton1'+ id ).addClass('selbutton ui circular purple icon button');
+    object[0].className = ('selbutton ui circular purple icon button');
+    } }) };
 
 </script>

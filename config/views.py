@@ -186,9 +186,22 @@ def toggleavail(request):
     if request.method == 'GET':
         post_id = request.GET['post_id']
         post_value = request.GET['post_value']
-        likedpost = Availbility.objects.get(id = post_id )
-        likedpost.state=post_value
-        likedpost.save()
+        game_id = request.GET['gameday_id']
+        avail = Availbility.objects.get(id = post_id )
+        avail.state=post_value
+        avail.save()
+        return HttpResponse('success')
+    else:
+        return HttpResponse("unsuccesful")
+
+def toggleselection(request):
+    if request.method == 'GET':
+        post_id = request.GET['post_id']
+        post_value = request.GET['post_value']
+        gameday_id = request.GET['gameday_id']
+        avail = Availbility.objects.get(id = post_id )
+        avail.selection=post_value
+        avail.save()
         return HttpResponse('success')
     else:
         return HttpResponse("unsuccesful")
